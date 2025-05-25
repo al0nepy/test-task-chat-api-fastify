@@ -1,12 +1,14 @@
 // @ts-check
 
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import eslintPluginUnicorn from 'eslint-plugin-unicorn'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
+  eslintPluginPrettierRecommended,
   eslintPluginUnicorn.configs.recommended,
   {
     files: ['**/*.ts'],
