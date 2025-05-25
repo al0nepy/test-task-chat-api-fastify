@@ -18,6 +18,11 @@ services:
       - ./uploads:/app/uploads
     networks:
       - app-network
+    command: >
+      sh -c "
+        npm run db:migrate &&
+        node dist/server.js
+      "
 
   db:
     image: postgres:17-alpine3.20

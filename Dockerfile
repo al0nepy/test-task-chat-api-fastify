@@ -5,9 +5,11 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
+
+RUN npm run build
 
 FROM node:lts-alpine
 
@@ -17,16 +19,16 @@ WORKDIR /app
 
 COPY --from=builder /app /app
 
-RUN mkdir uploads
+RUN mkdir -p /app/uploads && \
+    chown -R appuser:appgroup /app/uploads && \
+    chmod -R 755 /app/uploads
 
 ENV NODE_ENV=production
 
 RUN chown -R appuser:appgroup /app
 
-RUN chown -R appuser:appgroup /uploads
-
 USER appuser
 
 EXPOSE 3000
 
-CMD ["node", "src/server.js"]
+CMD ["node", "dist/server.js"]

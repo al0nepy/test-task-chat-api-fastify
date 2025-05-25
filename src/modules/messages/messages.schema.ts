@@ -6,7 +6,6 @@ export const MessageTextCreate = Type.Object({
 
 export const MessageListParameters = Type.Object({
   cursor: Type.Optional(Type.Integer()),
-  orderBy: Type.Optional(Type.String()),
   limit: Type.Optional(Type.Number({ default: 20, minimum: 1, maximum: 100 }))
 })
 
