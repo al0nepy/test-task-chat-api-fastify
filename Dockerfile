@@ -17,12 +17,16 @@ WORKDIR /app
 
 COPY --from=builder /app /app
 
+RUN mkdir uploads
+
 ENV NODE_ENV=production
 
 RUN chown -R appuser:appgroup /app
+
+RUN chown -R appuser:appgroup /uploads
 
 USER appuser
 
 EXPOSE 3000
 
-CMD ["node", "src/index.js"]
+CMD ["node", "src/server.js"]
