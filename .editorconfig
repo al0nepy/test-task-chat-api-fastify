@@ -1,0 +1,35 @@
+# EditorConfig helps developers define and maintain consistent coding styles between different editors and IDEs
+
+# top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Node.js project specific settings
+[*.js]
+# Change these settings according to your preferences
+indent_style = space
+indent_size = 2
+
+[*.mjs]
+# Change these settings according to your preferences
+indent_style = space
+indent_size = 2
+
+# TypeScript specific settings
+[*.ts]
+# Change these settings according to your preferences
+indent_style = space
+indent_size = 2
+
+# Ignore compiled JavaScript files
+[dist/**.js]
+binary = true
+
+# Ignore node_modules directory
+[node_modules/**]
