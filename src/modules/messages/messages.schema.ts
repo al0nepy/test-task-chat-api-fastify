@@ -11,8 +11,8 @@ export const MessageListParameters = Type.Object({
 })
 
 export const MessageResponse = Type.Object({
-  id: Type.String({ format: 'uuid' }),
-  userId: Type.String({ format: 'uuid' }),
+  id: Type.Integer(),
+  user: Type.String(),
   type: Type.Union([Type.Literal('text'), Type.Literal('file')]),
   content: Type.Optional(Type.String()),
   fileName: Type.Optional(Type.String()),
@@ -20,6 +20,8 @@ export const MessageResponse = Type.Object({
   fileMimeType: Type.Optional(Type.String()),
   createdAt: Type.String({ format: 'date-time' })
 })
+
+
 
 export type MessageTextCreateType = Static<typeof MessageTextCreate>
 export type MessageListParametersType = Static<typeof MessageListParameters>

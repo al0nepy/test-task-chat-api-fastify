@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs, { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { v4 as uuidv4 } from 'uuid'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
@@ -14,6 +14,7 @@ import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
 import { Type } from '@sinclair/typebox'
 import { desc, eq, gt } from 'drizzle-orm'
+import { MultipartFile } from '@fastify/multipart'
 
 const pump = promisify(pipeline)
 
@@ -28,8 +29,8 @@ export async function messagesRoutes(app: FastifyInstance) {
           body: MessageTextCreate,
           response: {
             201: MessageResponse,
-            400: { $ref: 'errorResponse#' },
-            401: { $ref: 'errorResponse#' }
+            400: { $ref: 'ErrorResponse#' },
+            401: { $ref: 'ErrorResponse#' }
           },
           description: 'Create a new text message',
           tags: ['Messages'],
@@ -61,41 +62,49 @@ export async function messagesRoutes(app: FastifyInstance) {
           tags: ['Messages'],
           consumes: ['multipart/form-data'],
           security: [{ basicAuth: [] }],
+          body: {
+            type: 'object',
+            required: ['file'],
+            properties: {
+              file: {
+                isFile: true
+              }
+            }
+          },
           response: {
             201: MessageResponse,
-            400: { $ref: 'errorResponse#' },
-            401: { $ref: 'errorResponse#' },
-            413: { $ref: 'errorResponse#' },
-            415: { $ref: 'errorResponse#' }
+            400: { $ref: 'ErrorResponse#' },
+            401: { $ref: 'ErrorResponse#' },
+            413: { $ref: 'ErrorResponse#' },
+            415: { $ref: 'ErrorResponse#' }
           },
         },
       },
-      async (request: FastifyRequest, reply: FastifyReply) => {
-        const data = await request.file()
+      async (request: FastifyRequest<{ Body: { file: MultipartFile } }>, reply: FastifyReply) => {
+        const { file } = await request.body
         const { user } = request
 
-        if (!data) {
+        if (!file) {
           throw app.httpErrors.badRequest('No file uploaded')
         }
 
-        const fileExtension = path.extname(data.filename)
+        const fileExtension = path.extname(file.filename)
         const fileName = `${uuidv4()}${fileExtension}`
-        const filePath = path.join(import.meta.dirname, '/uploads', fileName)
+        const filePath = path.join(import.meta.dirname, `../../../uploads/${fileName}`)
 
-        await pump(data.file, fs.createWriteStream(filePath))
+        const writeStream = createWriteStream(filePath)
+        await pipeline(file.file, writeStream)
 
-        const message = await app.database
+        await app.database
           .insert(messages)
           .values({
             user: user?.login,
             fileName,
             filePath: filePath,
-            fileMimeType: data.mimetype,
+            fileMimeType: file.mimetype,
             type: 'file',
           })
-          .returning()
-
-        return reply.code(201).send(message)
+        return reply.code(201)
       },
     )
 
@@ -112,7 +121,7 @@ export async function messagesRoutes(app: FastifyInstance) {
               items: Type.Array(MessageResponse),
               nextCursor: Type.Optional(Type.String()),
             }),
-            401: { $ref: 'errorResponse#' }
+            401: { $ref: 'ErrorResponse#' }
           },
         },
       },
@@ -139,7 +148,7 @@ export async function messagesRoutes(app: FastifyInstance) {
       '/content',
       {
         schema: {
-          querystring: { id: Type.Number() },
+          querystring: Type.Object({ id: Type.Number() }),
           description: 'Get message content',
           tags: ['Messages'],
           security: [{ basicAuth: [] }],

@@ -7,13 +7,13 @@ import { hashPassword, verifyPassword } from '../../utils/password.js'
 export async function accountRoutes(app: FastifyInstance) {
   app.post('/login', {
     schema: {
-      description: 'Register a new user account',
+      description: 'Authenticate and get access',
       tags: ['Authentication'],
       body: LoginInput,
       response: {
         201: {},
-        400: { $ref: 'errorResponse#' },
-        409: { $ref: 'errorResponse#' }
+        400: { $ref: 'ErrorResponse#' },
+        409: { $ref: 'ErrorResponse#' }
       }
     },
   }, async (
@@ -25,8 +25,8 @@ export async function accountRoutes(app: FastifyInstance) {
       where: eq(users.login, login)
     })
 
-    if (user) {
-      throw app.httpErrors.conflict('Email already in use')
+    if (!user) {
+      throw app.httpErrors.conflict('Wrong credentials')
     }
 
     const checkPasswordResult = await verifyPassword(user.password, password)
@@ -40,12 +40,12 @@ export async function accountRoutes(app: FastifyInstance) {
 
   app.post('/register', {
     schema: {
-      description: 'Authenticate and get access',
+      description: 'Register a new user account',
       tags: ['Authentication'],
       body: RegisterInput,
       response: {
         200: {},
-        401: { $ref: 'errorResponse#' }
+        401: { $ref: 'ErrorResponse#' }
       }
     },
   }, async (

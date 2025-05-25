@@ -3,6 +3,7 @@ import multipart from '@fastify/multipart'
 import { FastifyInstance } from 'fastify'
 
 const multipartConfig = {
+  attachFieldsToBody: true,
   limits: {
     fieldNameSize: 100,
     fieldSize: 100,
