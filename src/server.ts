@@ -15,8 +15,8 @@ const app = fastify({
       useDefaults: true,
       allErrors: false,
     },
-    plugins: [ajvFilePlugin]
-  }
+    plugins: [ajvFilePlugin],
+  },
 }).withTypeProvider<TypeBoxTypeProvider>()
 
 async function init() {

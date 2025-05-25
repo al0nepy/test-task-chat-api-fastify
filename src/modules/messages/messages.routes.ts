@@ -51,36 +51,33 @@ export async function messagesRoutes(app: FastifyInstance) {
       },
     )
 
-    app.post(
-      '/file',
-      async (request: FastifyRequest, reply: FastifyReply) => {
-        const data: MultipartFile | undefined = await request.file()
-        const { user } = request
+    app.post('/file', async (request: FastifyRequest, reply: FastifyReply) => {
+      const data: MultipartFile | undefined = await request.file()
+      const { user } = request
 
-        if (!data?.file) {
-          throw app.httpErrors.badRequest('No file uploaded');
-        }
+      if (!data?.file) {
+        throw app.httpErrors.badRequest('No file uploaded')
+      }
 
-        const fileExtension = path.extname(data.filename)
-        const fileName = `${uuidv4()}${fileExtension}`
-        const filePath = path.join(import.meta.dirname, `../../../uploads/${fileName}`)
+      const fileExtension = path.extname(data.filename)
+      const fileName = `${uuidv4()}${fileExtension}`
+      const filePath = path.join(import.meta.dirname, `../../../uploads/${fileName}`)
 
-        try {
-          await pipeline(data?.file, createWriteStream(filePath))
-          await app.database.insert(messages).values({
-            user: user?.login,
-            fileName,
-            filePath: filePath,
-            fileMimeType: data.mimetype,
-            type: 'file',
-          })
-          return reply.code(201).send({ msg: 'success' })
-        } catch (error) {
-          app.log.error(error)
-          return reply.code(500).send({ error: 'Internal server error' })
-        }
-      },
-    )
+      try {
+        await pipeline(data?.file, createWriteStream(filePath))
+        await app.database.insert(messages).values({
+          user: user?.login,
+          fileName,
+          filePath: filePath,
+          fileMimeType: data.mimetype,
+          type: 'file',
+        })
+        return reply.code(201).send({ msg: 'success' })
+      } catch (error) {
+        app.log.error(error)
+        return reply.code(500).send({ error: 'Internal server error' })
+      }
+    })
 
     app.get(
       '/',
