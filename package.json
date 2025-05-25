@@ -10,9 +10,7 @@
     "format": "eslint src/**/*.ts --fix",
     "check:types": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:migrate": "drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",
