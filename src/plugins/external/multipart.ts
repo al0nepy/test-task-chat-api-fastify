@@ -7,7 +7,7 @@ const multipartConfig = {
     fieldNameSize: 100,
     fieldSize: 100,
     fields: 10,
-    fileSize: 1 * 1024 * 1024,
+    fileSize: 2 * 1024 * 1024,
     files: 1,
     parts: 1000
   }

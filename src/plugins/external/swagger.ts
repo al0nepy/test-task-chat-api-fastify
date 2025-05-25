@@ -9,12 +9,20 @@ export default fp(async function (fastify) {
       info: {
         title: 'Fastify Chat API',
         description: 'Chat API',
-        version: '0.1.0'
-      }
-    }
+        version: '0.1.0',
+      },
+      components: {
+        securitySchemes: {
+          basicAuth: {
+            type: 'http',
+            scheme: 'basic',
+          },
+        },
+      },
+    },
   })
 
   await fastify.register(fastifySwaggerUi, {
-    routePrefix: '/api/docs'
+    routePrefix: '/api/docs',
   })
 })
