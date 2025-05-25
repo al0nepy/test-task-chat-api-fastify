@@ -34,7 +34,10 @@ The Chat REST API endpoints:
 
    * Copy `.env.example` to `.env` and fill in the required values.
 
-4. **Run the application**:
+4. **Create folder uploads if not exits**:
+   * Root: ```bash mkdir uploads```
+
+5. **Run the application**:
 
    * Using Node.js:
 
