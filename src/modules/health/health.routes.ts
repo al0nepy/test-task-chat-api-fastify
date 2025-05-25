@@ -6,7 +6,7 @@ export async function healthRouter(app: FastifyInstance) {
     return reply.code(200).send({ msg: 'Works!' })
   })
 
-    app.get('/health', (request: FastifyRequest, reply: FastifyReply) => {
+  app.get('/health', (request: FastifyRequest, reply: FastifyReply) => {
     return reply.code(200).send({ msg: 'Healthy' })
   })
 }

@@ -6,13 +6,13 @@ import { Type } from '@sinclair/typebox'
 const ErrorResponse = Type.Object({
   error: Type.String(),
   message: Type.String(),
-  statusCode: Type.Number()
+  statusCode: Type.Number(),
 })
 
 export default fp(async function (fastify) {
-   fastify.addSchema({
+  fastify.addSchema({
     $id: 'ErrorResponse',
-    ...ErrorResponse
+    ...ErrorResponse,
   })
 
   await fastify.register(fastifySwagger, {
